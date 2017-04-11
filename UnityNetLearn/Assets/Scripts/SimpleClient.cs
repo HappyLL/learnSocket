@@ -26,6 +26,8 @@ public class SimpleClient : MonoBehaviour {
 		string recs = System.Text.Encoding.UTF8.GetString (reBy, 0 , count);
 		print (recs);
 
+		m_socket.Close ();
+
 	}
 	
 	// Update is called once per frame
