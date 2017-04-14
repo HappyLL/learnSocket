@@ -14,6 +14,13 @@ namespace SimpleNet
 			MultiChatServer svr = new MultiChatServer ();
 			svr.ServerInit ();
 			svr.ServerStart ();
+
+			while (true) 
+			{
+				if (Console.ReadLine () == "quit")
+					break;	
+			}
+			svr.ServerUInit ();
 		}
 	}
 }

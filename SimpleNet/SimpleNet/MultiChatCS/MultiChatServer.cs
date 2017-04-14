@@ -87,6 +87,7 @@ namespace SimpleNet
 		public void ServerUInit()
 		{
 			m_conntors = null;
+			m_socket.Close ();
 		}
 
 		public void SendAllMsg(Connector obj , string msg)

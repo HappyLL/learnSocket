@@ -10,10 +10,14 @@ public class ClientUI : MonoBehaviour {
 
 	private string m_text;
 	private MultiClient m_client;
+	private string m_cbText;
 	// Use this for initialization
 	void Start () {
 		m_SendButton.onClick.AddListener (OnClickCallBack);
 		m_InputField.onEndEdit.AddListener (OnInputEndedEdit);
+
+		m_cbText = "";
+		m_text = "";
 
 		m_client = new MultiClient ();
 		m_client.InitClient (GetMsg);
@@ -30,18 +34,31 @@ public class ClientUI : MonoBehaviour {
 	{
 		if (m_text == null || m_text.Equals ("") || m_text.Length == 0)
 			return;
-		
+
+		GetMsg (m_text);
 		m_client.SendMsg (m_text);
+		m_text = "";
 	}
 
 	private void GetMsg(string con)
 	{
-		m_RecContent.text += con + "\n"; 
+		m_cbText = con + "\n"; 
 	}
 
 
 	// Update is called once per frame
 	void Update () {
-	
+		
+		if(m_cbText.Length > 0 )
+		{
+			m_RecContent.text += m_cbText;
+			m_cbText = "";
+		}
+
+	}
+
+	void OnDestory()
+	{
+		m_client.UnInitClient ();
 	}
 }
