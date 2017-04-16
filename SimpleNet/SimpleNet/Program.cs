@@ -11,16 +11,19 @@ namespace SimpleNet
 			//SimpleServer svr = new SimpleServer ();
 			//svr.ServerStart ();
 
-			MultiChatServer svr = new MultiChatServer ();
-			svr.ServerInit ();
-			svr.ServerStart ();
+			//MultiChatServer svr = new MultiChatServer ();
+			//svr.ServerInit ();
+			//svr.ServerStart ();
 
-			while (true) 
+			/*while (true) 
 			{
 				if (Console.ReadLine () == "quit")
 					break;	
 			}
-			svr.ServerUInit ();
+			svr.ServerUInit ();*/
+			MyThread th = new MyThread ();
+			th.Init ();
+			th.Start ();
 		}
 	}
 }
