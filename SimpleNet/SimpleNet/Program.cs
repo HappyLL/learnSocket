@@ -15,15 +15,22 @@ namespace SimpleNet
 			//svr.ServerInit ();
 			//svr.ServerStart ();
 
-			/*while (true) 
+			SimplePosCS svr = new SimplePosCS ();
+			svr.SPCSInit ();
+			svr.SPCSStart ();
+
+
+			while (true) 
 			{
 				if (Console.ReadLine () == "quit")
 					break;	
 			}
-			svr.ServerUInit ();*/
-			MyThread th = new MyThread ();
-			th.Init ();
-			th.Start ();
+
+			svr.SPCSUInit ();
+			//svr.ServerUInit ();
+			//MyThread th = new MyThread ();
+			//th.Init ();
+			//th.Start ();
 		}
 	}
 }
