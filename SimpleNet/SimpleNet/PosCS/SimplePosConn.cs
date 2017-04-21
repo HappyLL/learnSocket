@@ -45,7 +45,7 @@ namespace SimpleNet
 
 		private void RecMsgCb(IAsyncResult ret)
 		{
-			SimplePosConn conn = (SimplePosConn)ret;
+			SimplePosConn conn = (SimplePosConn)ret.AsyncState;
 			if (conn == null) 
 			{
 				Console.WriteLine ("The Conn is Null");

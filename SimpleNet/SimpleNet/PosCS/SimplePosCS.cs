@@ -55,6 +55,17 @@ namespace SimpleNet
 			return null;
 		}
 
+		private int GetIndex(SimplePosConn conn)
+		{
+			for (int i = 0; i < m_posConns.Length; ++i) 
+			{
+				if (m_posConns [i] == conn)
+					return i;
+			}
+
+			return -1;
+		}
+
 		private void AcceptConnCb(IAsyncResult ret)
 		{
 			Socket sk = m_socket.EndAccept (ret);
@@ -81,32 +92,35 @@ namespace SimpleNet
 				return;
 			
 			PrintMsg (content , conn);
-			if (IsLeaveMsg(content)) 
+			string[] proto = content.Split ('|');
+
+			if (proto.Length <= 1)
+				return;
+				
+			if (proto[0].Equals("Leave"))
 			{
 				LeaveMsg (conn);
+			} 
+			else if (proto[0].Equals("Create")) 
+			{
+				proto [1] = GetIndex (conn) + ""; 
+				content = string.Join ("|" , proto);
+				byte[] sBy = System.Text.Encoding.Default.GetBytes (content);
+				conn.PosConnSocket.Send (sBy);
+			} 
+			else if (proto[0].Equals("Post"))
+			{
+				SendMsgToAll (content, conn);
 			}
-			else
-				SendMsgToAll (content , conn);
 				
 		}
-
-		private bool IsLeaveMsg(string content)
-		{
-			string[] spMsg = content.Split ('|');
-
-			//协议类型type（post ， leave | content（x ， y ，z））
-			if(spMsg.Length >= 1 && spMsg[1] == "Leave")
-				return true;
-	
-			return false;
-		}
-
+			
 		private void PrintMsg(string content , SimplePosConn conn)
 		{
 			Socket sk = conn.PosConnSocket;
 
 			string msgAddress =	sk.RemoteEndPoint.ToString();
-			string msgSays = msgAddress + " post: " + content;
+			string msgSays = msgAddress + " content: " + content;
 
 			Console.WriteLine (msgSays);
 		}
