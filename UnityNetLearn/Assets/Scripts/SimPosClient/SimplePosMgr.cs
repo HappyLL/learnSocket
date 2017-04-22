@@ -105,7 +105,7 @@ public class SimplePosMgr : MonoBehaviour {
 		Debug.Log (content);
 
 		if (type == "Create")
-			HandleCreateMsg (proto , index);
+			HandleCreateMsg (content , index);
 		else if (type == "Post")
 			HandlePosMsg (proto , index);
 		else if (type == "Leave")
@@ -125,16 +125,22 @@ public class SimplePosMgr : MonoBehaviour {
 	}
 
 	//id为服务端连接池的id
-	private void HandleCreateMsg(string[] proto , int ind)
+	private void HandleCreateMsg(string content , int ind)
 	{
 		m_curIndex = ind;
+		string []info = null;
+		string []proto = null;
 
-		int x = int.Parse(proto [2]);
-		int y = int.Parse(proto [3]);
-		int z = int.Parse(proto [4]);
+		info = content.Split('}');
 
-		this.CreateObj (ind , new Vector3(x , y , z));
-
+		for(int i = 0 ; i < info.Length ; ++ i)
+		{
+			string[] otherPos = info[i].Split('|');
+			int otherInd = int.Parse(otherPos[1]) ;
+			HandlePosMsg(otherPos , otherInd);
+		}
+			
+		//向其它人同步位置信息
 		SendPosMsg ();
 	}
 

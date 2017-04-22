@@ -14,6 +14,7 @@ namespace SimpleNet
 		private Socket m_socket;
 		private bool m_isUsed;
 		private byte[] m_bytes;
+		private int m_byteCnt;
 
 		private SendMsg m_fSMsg;
 
@@ -27,6 +28,7 @@ namespace SimpleNet
 			m_isUsed = false;
 
 			m_bytes = new byte[BYTE_NUM];
+			m_byteCnt = 0;
 
 			m_fSMsg = fSAMsg;
 		}
@@ -55,10 +57,12 @@ namespace SimpleNet
 			{
 				int ind = 0;
 				int count  = conn.PosConnSocket.EndReceive(ret);
+				conn.ByteCount = count;
+
 				String s = System.Text.Encoding.Default.GetString(conn.GetContent() , ind , count);
 				//回调发送
 				if(m_fSMsg != null)
-					m_fSMsg(s , this);
+					m_fSMsg(s , conn);
 				else
 					Console.WriteLine("The CB Is Null");
 			}
@@ -73,6 +77,18 @@ namespace SimpleNet
 		public byte[] GetContent()
 		{
 			return m_bytes;
+		}
+
+		public int ByteCount
+		{
+			get
+			{
+				return m_byteCnt;
+			}
+			set
+			{ 
+				m_byteCnt = value;
+			}
 		}
 
 		public void SPConnUnit()

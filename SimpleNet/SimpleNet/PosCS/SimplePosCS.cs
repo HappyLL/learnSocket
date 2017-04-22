@@ -103,8 +103,12 @@ namespace SimpleNet
 			} 
 			else if (proto[0].Equals("Create")) 
 			{
+				//可能当本次连接创建后已经有其他连接 需要向该conn发送其他人的信息(数据小会将数据合并：先发了创建又发了其他人的信息所以会导致数据合并)
 				proto [1] = GetIndex (conn) + ""; 
 				content = string.Join ("|" , proto);
+
+				content += this.GetMsgToOne (conn);
+
 				byte[] sBy = System.Text.Encoding.Default.GetBytes (content);
 				conn.PosConnSocket.Send (sBy);
 			} 
@@ -123,6 +127,29 @@ namespace SimpleNet
 			string msgSays = msgAddress + " content: " + content;
 
 			Console.WriteLine (msgSays);
+		}
+
+		private string GetMsgToOne(SimplePosConn conn)
+		{
+
+			string ret = "";
+			for (int i = 0; i < m_posConns.Length; ++i) 
+			{
+				if (m_posConns [i] != null && m_posConns [i].PosConnUsed && m_posConns [i] != conn) 
+				{
+					string str = System.Text.Encoding.UTF8.GetString (m_posConns[i].GetContent() , 0 , m_posConns[i].ByteCount);
+					string[] proto = str.Split ('|');
+					if (proto.Length <= 1 || proto [0] == "Leave")
+						continue;
+					proto[0] = "Post";
+					str = string.Join ("|",proto);
+					ret = ret + '}' + str;
+					//byte[] sBy = System.Text.Encoding.Default.GetBytes (str);
+					//conn.PosConnSocket.Send (sBy);
+				}
+			}
+
+			return ret;
 		}
 
 		private void SendMsgToAll(string content , SimplePosConn conn)
